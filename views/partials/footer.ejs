@@ -1,0 +1,22 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Shared page footer. Closes <main>, shows the site footer,
+              loads the shared nav script and closes the document.
+
+  Usage, inside an unescaped output tag: include('../partials/footer')
+%>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p>&copy; <%= new Date().getFullYear() %> Chess Club Finder</p>
+      <p class="muted">Find clubs, players and meetups near you.</p>
+    </div>
+  </footer>
+
+  <script src="/js/nav.js"></script>
+</body>
+</html>

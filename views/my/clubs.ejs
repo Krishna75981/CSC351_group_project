@@ -1,0 +1,42 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    My clubs page (GET /my/clubs): clubs the user belongs to,
+              with their role in each.
+
+  Locals (route contract, GET /my/clubs):
+    clubs  [{ club_id, name, city, state, role, member_count }]
+%>
+<%- include('../partials/header', { title: 'My clubs' }) %>
+
+<div class="page-header">
+  <div>
+    <h1>My clubs</h1>
+    <p>Clubs you belong to</p>
+  </div>
+  <a href="/clubs/new" class="btn btn--primary">Create club</a>
+</div>
+
+<% if (clubs.length === 0) { %>
+  <div class="empty-state">
+    <p>You haven't joined any clubs yet.</p>
+    <a href="/clubs" class="btn btn--primary">Find clubs</a>
+  </div>
+<% } else { %>
+  <ul class="result-list">
+    <% for (const c of clubs) { %>
+      <li class="card">
+        <h2 class="card__title h3"><a href="/clubs/<%= c.club_id %>"><%= c.name %></a></h2>
+        <div class="card__meta">
+          <span class="badge badge--<%= c.role %>"><%= c.role === 'organizer' ? 'Organizer' : 'Member' %></span>
+          <span><%= c.city %>, <%= c.state %></span>
+          <span><%= c.member_count %> members</span>
+        </div>
+      </li>
+    <% } %>
+  </ul>
+<% } %>
+
+<%- include('../partials/footer') %>

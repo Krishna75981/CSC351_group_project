@@ -1,0 +1,60 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Invitations page (GET /invitations): invites the user has
+              received, with Accept and Decline for pending ones.
+
+  Locals (route contract, GET /invitations, back end by Krishna):
+    invitations  [{ invite_id, club_id, club_name, sender_name, sent_at, status }]
+%>
+<%- include('../partials/header', { title: 'Invitations' }) %>
+<% const fmt = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); %>
+<% const labels = { pending: 'Pending', accepted: 'Accepted', declined: 'Declined' }; %>
+
+<div class="page-header">
+  <div>
+    <h1>Invitations</h1>
+    <p>Clubs that have invited you to join</p>
+  </div>
+</div>
+
+<% if (invitations.length === 0) { %>
+  <div class="empty-state">
+    <p>You have no invitations right now.</p>
+    <a href="/clubs" class="btn">Find clubs</a>
+  </div>
+<% } else { %>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr><th>Club</th><th>From</th><th>Sent</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% for (const inv of invitations) { %>
+          <tr>
+            <td><a href="/clubs/<%= inv.club_id %>"><%= inv.club_name %></a></td>
+            <td><%= inv.sender_name %></td>
+            <td><%= fmt(inv.sent_at) %></td>
+            <td><span class="badge badge--<%= inv.status %>"><%= labels[inv.status] %></span></td>
+            <td>
+              <% if (inv.status === 'pending') { %>
+                <div class="btn-row">
+                  <form class="inline-form" action="/invitations/<%= inv.invite_id %>/accept" method="post">
+                    <button type="submit" class="btn btn--primary btn--sm">Accept</button>
+                  </form>
+                  <form class="inline-form" action="/invitations/<%= inv.invite_id %>/decline" method="post">
+                    <button type="submit" class="btn btn--sm">Decline</button>
+                  </form>
+                </div>
+              <% } %>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

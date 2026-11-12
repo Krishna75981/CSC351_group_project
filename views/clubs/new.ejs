@@ -1,0 +1,54 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Create club form (GET /clubs/new, re-rendered by POST /clubs
+              when validation fails). The creator becomes the organizer.
+
+  Locals:
+    values  { name, description, zip }  what the user typed (empty on first load)
+    errors  { name, description, zip, _form }  only present after a failed POST
+%>
+<%- include('../partials/header', { title: 'Create club' }) %>
+<% const errors = locals.errors || {}; %>
+
+<div class="page-header">
+  <div>
+    <h1>Create club</h1>
+    <p>You'll be the club's organizer.</p>
+  </div>
+</div>
+
+<form class="form" action="/clubs" method="post" novalidate>
+  <%- include('../partials/form-errors', { errors }) %>
+
+  <div class="field<%= errors.name ? ' field--error' : '' %>">
+    <label for="name">Club name</label>
+    <input type="text" id="name" name="name" value="<%= values.name %>"
+           required minlength="3" maxlength="80" aria-describedby="name-error">
+    <%- include('../partials/field-error', { errors, field: 'name' }) %>
+  </div>
+
+  <div class="field<%= errors.description ? ' field--error' : '' %>">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" maxlength="1000"
+              aria-describedby="description-error description-hint"><%= values.description %></textarea>
+    <p class="field-hint" id="description-hint">Optional. Up to 1,000 characters.</p>
+    <%- include('../partials/field-error', { errors, field: 'description' }) %>
+  </div>
+
+  <div class="field<%= errors.zip ? ' field--error' : '' %>">
+    <label for="zip">ZIP code</label>
+    <input type="text" id="zip" name="zip" value="<%= values.zip %>"
+           required inputmode="numeric" pattern="\d{5}" maxlength="5" aria-describedby="zip-error">
+    <%- include('../partials/field-error', { errors, field: 'zip' }) %>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn--primary">Create club</button>
+    <a href="/clubs" class="btn">Cancel</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>

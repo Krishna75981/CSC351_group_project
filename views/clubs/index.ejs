@@ -1,0 +1,65 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Find clubs page (GET /clubs). Search by keyword and distance;
+              each result shows city, distance and member count.
+
+  Locals (route contract, GET /clubs, back end by Krishna):
+    clubs    [{ club_id, name, description, city, state, distance_miles, member_count }]
+    filters  { q, distance }  the search the user ran, to refill the form
+%>
+<%- include('../partials/header', { title: 'Find clubs' }) %>
+
+<div class="page-header">
+  <div>
+    <h1>Find clubs</h1>
+    <p>Chess clubs within <%= filters.distance %> miles of you</p>
+  </div>
+  <% if (locals.currentUser) { %>
+    <a href="/clubs/new" class="btn btn--primary">Create club</a>
+  <% } %>
+</div>
+
+<form class="filter-bar" action="/clubs" method="get" role="search">
+  <div class="field">
+    <label for="q">Keyword</label>
+    <input type="search" id="q" name="q" value="<%= filters.q %>" placeholder="Name or description">
+  </div>
+  <div class="field">
+    <label for="distance">Distance</label>
+    <select id="distance" name="distance">
+      <% for (const d of [5, 10, 25, 50]) { %>
+        <option value="<%= d %>" <%= Number(filters.distance) === d ? 'selected' : '' %>><%= d %> miles</option>
+      <% } %>
+    </select>
+  </div>
+  <button type="submit" class="btn btn--primary">Search</button>
+</form>
+
+<% if (clubs.length === 0) { %>
+  <div class="empty-state">
+    <p>No clubs match that search. Try a wider distance, or start your own.</p>
+    <a href="/clubs/new" class="btn btn--primary">Create club</a>
+  </div>
+<% } else { %>
+  <ul class="result-list">
+    <% for (const c of clubs) { %>
+      <li class="card">
+        <h2 class="card__title h3"><a href="/clubs/<%= c.club_id %>"><%= c.name %></a></h2>
+        <div class="card__meta">
+          <span><%= c.city %>, <%= c.state %></span>
+          <span><%= c.distance_miles.toFixed(1) %> mi</span>
+          <span><%= c.member_count %> <%= c.member_count === 1 ? 'member' : 'members' %></span>
+        </div>
+        <p class="mb-0"><%= c.description %></p>
+        <div class="card__actions btn-row">
+          <a href="/clubs/<%= c.club_id %>" class="btn btn--sm">View club</a>
+        </div>
+      </li>
+    <% } %>
+  </ul>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,93 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Club detail page (GET /clubs/:id): description, member list
+              with ratings, upcoming meetups, and Join or Leave.
+
+  Locals (route contract, GET /clubs/:id):
+    club     { club_id, name, description, city, state, zip }
+    members  [{ user_id, first_name, last_name, role, accounts: [{ platform, rating }] }]
+    meetups  [{ event_id, title, starts_at, venue_name }]
+    myRole   'organizer' | 'member' | null  (null = logged out or not a member)
+%>
+<%- include('../partials/header', { title: club.name }) %>
+<% const fmt = (d) => new Date(d).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); %>
+
+<div class="page-header">
+  <div>
+    <h1><%= club.name %></h1>
+    <p><%= club.city %>, <%= club.state %> <%= club.zip %> · <%= members.length %> <%= members.length === 1 ? 'member' : 'members' %></p>
+  </div>
+  <div class="btn-row">
+    <% if (myRole === 'organizer') { %>
+      <a href="/clubs/<%= club.club_id %>/members" class="btn">Manage members</a>
+      <a href="/clubs/<%= club.club_id %>/edit" class="btn">Edit club</a>
+    <% } %>
+    <% if (myRole) { %>
+      <form class="inline-form" action="/clubs/<%= club.club_id %>/leave" method="post">
+        <button type="submit" class="btn">Leave club</button>
+      </form>
+    <% } else if (locals.currentUser) { %>
+      <form class="inline-form" action="/clubs/<%= club.club_id %>/join" method="post">
+        <button type="submit" class="btn btn--primary">Join club</button>
+      </form>
+    <% } else { %>
+      <a href="/login" class="btn btn--primary">Log in to join</a>
+    <% } %>
+  </div>
+</div>
+
+<div class="split">
+  <div class="stack">
+    <section class="card">
+      <h2>About</h2>
+      <p class="mb-0"><%= club.description || 'No description yet.' %></p>
+    </section>
+
+    <section>
+      <h2>Members</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Chess accounts</th></tr>
+          </thead>
+          <tbody>
+            <% for (const m of members) { %>
+              <tr>
+                <td><a href="/players/<%= m.user_id %>"><%= m.first_name %> <%= m.last_name %></a></td>
+                <td><span class="badge badge--<%= m.role %>"><%= m.role === 'organizer' ? 'Organizer' : 'Member' %></span></td>
+                <td>
+                  <% if (m.accounts.length) { %>
+                    <%= m.accounts.map(a => `${a.platform} ${a.rating}`).join(' · ') %>
+                  <% } else { %>
+                    <span class="muted">None linked</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <aside class="card">
+    <h2>Upcoming meetups</h2>
+    <% if (meetups.length === 0) { %>
+      <p class="muted mb-0">No meetups scheduled.</p>
+    <% } else { %>
+      <ul class="mt-0 mb-0" style="padding-left: 1.1rem">
+        <% for (const e of meetups) { %>
+          <li style="margin-bottom: .75rem">
+            <a href="/meetups/<%= e.event_id %>"><%= e.title %></a><br>
+            <span class="muted"><%= fmt(e.starts_at) %> · <%= e.venue_name %></span>
+          </li>
+        <% } %>
+      </ul>
+    <% } %>
+  </aside>
+</div>
+
+<%- include('../partials/footer') %>

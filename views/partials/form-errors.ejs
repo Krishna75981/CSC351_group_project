@@ -1,0 +1,27 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Summary banner at the top of a form that failed validation.
+
+  Team convention for every form:
+    On a validation failure, the route re-renders the same view with
+      errors: { fieldName: 'Message', _form: 'Message not tied to one field' }
+      values: req.body
+    so the user's input is kept and each bad field shows its message.
+    On success, the route redirects (POST, then redirect, then GET).
+
+  Usage, at the top of the form, inside an unescaped output tag:
+    include('../partials/form-errors', { errors: locals.errors })
+%>
+<% const errs = locals.errors || {}; %>
+<% if (Object.keys(errs).length) { %>
+  <div class="alert alert--error" role="alert">
+    <% if (errs._form) { %>
+      <%= errs._form %>
+    <% } else { %>
+      Please fix the highlighted fields below.
+    <% } %>
+  </div>
+<% } %>

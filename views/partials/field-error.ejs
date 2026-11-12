@@ -1,0 +1,17 @@
+<%#
+  Name:       Jackson [last name]
+  Course:     CSC351 Database Management
+  Date:       2026-11-12
+  Assignment: Semester project
+  Purpose:    Error message under one form field. Renders nothing when the
+              field is valid. See form-errors.ejs for the team convention.
+
+  Usage, right after the input, inside an unescaped output tag:
+    include('../partials/field-error', { errors: locals.errors, field: 'name' })
+  Also add class "field--error" to the field wrapper when errors[field] is set,
+  and aria-describedby="name-error" on the input.
+%>
+<% const msg = locals.errors && locals.errors[field]; %>
+<% if (msg) { %>
+  <p class="field-error" id="<%= field %>-error"><%= msg %></p>
+<% } %>

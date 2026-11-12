@@ -1,0 +1,14 @@
+{
+  "name": "layout-preview",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Throwaway preview of the shared layout and draft Clubs & Invitations pages, with fake data.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ejs": "3.1.10",
+    "express": "4.21.2"
+  }
+}
